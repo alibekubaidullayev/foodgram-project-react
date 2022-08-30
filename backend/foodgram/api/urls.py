@@ -1,21 +1,17 @@
-from rest_framework import serializers
+from rest_framework.routers import SimpleRouter
 
-from .models import Tag, Ingredient, Recipe
+from django.urls import include, path
 
+from recipes.views import TagViewSet, IngredientViewSet, RecipeViewSet
 
-class TagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tag
-        fields = '__all__'
+app_name = 'api'
 
+router = SimpleRouter()
 
-class IngredientSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Ingredient
-        fields = '__all__'
+router.register('tags', TagViewSet)
+router.register('ingerdients', IngredientViewSet)
+router.register('recipes', RecipeViewSet)
 
-
-class RecipeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Recipe
-        fields = '__all__'
+urlpatterns = [
+    path('', include(router.urls)),
+] 
