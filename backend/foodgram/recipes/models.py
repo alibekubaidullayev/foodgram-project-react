@@ -2,10 +2,8 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
 from django.db import models
 
-User = get_user_model()
 
 MAX_LENGTH = 200
-
 USER = 'user'
 ADMIN = 'admin'
 USERNAME_LENGTH = 150
