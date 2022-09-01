@@ -31,13 +31,14 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class IngredientSerializer(serializers.ModelSerializer):
+    amount = serializers.IntegerField()
     class Meta:
         model = Ingredient
         fields = ('name', 'amount', 'unit')
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    ingredients = IngredientSerializer()
+    ingredients = IngredientSerializer(many=True)
     tags = TagSerializer(many=True)
 
     class Meta:

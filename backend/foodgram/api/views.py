@@ -11,11 +11,12 @@ from rest_framework.pagination import (LimitOffsetPagination,
 from rest_framework.permissions import SAFE_METHODS, AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.settings import api_settings
-
+from django_filters.rest_framework import DjangoFilterBackend
 from .permissions import IsAdmin, IsAdminOrReadOnly
-from .serializers import (IngredientSerializer, RecipeSerializer,
+from .serializers import (IngredientSerializer, RecipeSerializer, RecipePostEditSerializer,
                           SignUpSerializer, TagSerializer, TokenSerializer,
                           UserSerializer)
+from .filters import RecipeFilter
 
 USERNAME_EMAIL_ALREADY_EXISTS = 'Такое username или email уже занято.'
 CORRECT_CODE_EMAIL_MESSAGE = 'Код подтверждения: {code}.'
@@ -48,6 +49,7 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save(role=request.user.role)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 @api_view(['POST'])
 @permission_classes((AllowAny,))
@@ -140,6 +142,14 @@ class IngredientViewSet(viewsets.ModelViewSet):
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
+    pagination_class = PageNumberPagination
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = RecipeFilter
+
+    def get_serializer_class(self):
+        if self.request.method in SAFE_METHODS:
+            return RecipeSerializer
+        return RecipePostEditSerializer
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
