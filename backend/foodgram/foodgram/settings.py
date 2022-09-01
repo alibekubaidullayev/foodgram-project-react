@@ -37,12 +37,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_URLS_REGEX = r'^/api/.*$' 
+CORS_URLS_REGEX = r'^/api/.*$'
 
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5000',
-] 
+]
 
 ROOT_URLCONF = 'foodgram.urls'
 
@@ -102,3 +102,6 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')

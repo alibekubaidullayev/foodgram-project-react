@@ -1,7 +1,6 @@
-from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractUser
 from django.db import models
-
 
 MAX_LENGTH = 200
 USER = 'user'
@@ -83,12 +82,12 @@ class Recipe(models.Model):
         verbose_name='Author'
     )
     name = models.CharField(max_length=MAX_LENGTH)
-    image = models.ImageField(
-        verbose_name='Image',
-        upload_to='dishes/',
-        blank=True
-    )
+    # image = models.ImageField(
+    #     verbose_name='Image',
+    #     upload_to='dishes/',
+    #     blank=True
+    # )
     description = models.TextField()
-    ingredients = models.ManyToManyField(Ingredient, related_name='recipes')
-    tags = models.ManyToManyField(Tag, related_name='recipes')
+    ingredients = models.ManyToManyField(Ingredient, related_name='recipes', blank=True)
+    tags = models.ManyToManyField(Tag, related_name='recipes', blank=True)
     cooking_time_m = models.IntegerField()
