@@ -1,7 +1,9 @@
 from pydoc import describe
+
 from django.core.management import BaseCommand
-from recipes.models import Ingredient, Recipe, Tag, User
 from django.shortcuts import get_object_or_404
+
+from recipes.models import Ingredient, Recipe, Tag, User
 
 aut = User.objects.create(
     username='a',
