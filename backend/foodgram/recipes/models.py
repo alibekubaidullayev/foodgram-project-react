@@ -1,12 +1,9 @@
-from django.contrib.auth import get_user_model
-from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from users.models import User
+from users.models import CustomUser 
 
 MAX_LENGTH = 200
 
-User = get_user_model()
 
 class Tag(models.Model):
     name = models.CharField(max_length=MAX_LENGTH)
@@ -16,6 +13,7 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
+
 class Ingredient(models.Model):
     name = models.CharField(max_length=MAX_LENGTH)
     amount = models.IntegerField()
@@ -24,9 +22,10 @@ class Ingredient(models.Model):
     def __str__(self):
         return self.name
 
+
 class Recipe(models.Model):
     author = models.ForeignKey(
-        User,
+        CustomUser,
         on_delete=models.CASCADE,
         verbose_name='Author'
     )
@@ -38,9 +37,25 @@ class Recipe(models.Model):
     )
     description = models.TextField()
     ingredients = models.ManyToManyField(
-        Ingredient, related_name='recipes', blank=True)
-    tags = models.ManyToManyField(Tag, related_name='recipes', blank=True)
+        Ingredient, related_name='recipes')
+    tags = models.ManyToManyField(Tag, related_name='recipes')
     cooking_time_m = models.IntegerField()
 
     def __str__(self):
         return self.name
+
+
+# class TagRecipe(models.Model):
+#     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+#     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+
+#     def __str__(self):
+#         return f'{self.tag} {self.recipe}'
+
+
+# class IngredientRecipe(models.Model):
+#     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+#     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+
+#     def __str__(self):
+#         return f'{self.ingredient} {self.recipe}'

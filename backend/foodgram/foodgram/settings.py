@@ -22,7 +22,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'recipes.apps.RecipesConfig',
     'api.apps.ApiConfig',
-    'users.apps.UsersConfig'
+    'users.apps.UsersConfig',
 ]
 
 MIDDLEWARE = [
@@ -77,6 +77,12 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 6
 }
 
+DJOSER = {
+    'SERIALIZERS': {
+        'user': 'users.serializers.CustomUserSerializer'
+    },
+}
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -94,6 +100,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+AUTH_USER_MODEL = 'users.CustomUser'
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
