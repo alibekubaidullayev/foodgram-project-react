@@ -15,11 +15,11 @@ ROLES = {
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, name, password=None, **kwargs):
+    def create_user(self, email, password=None, **kwargs):
         if not email:
             raise ValueError("Users must have an email address")
         email = self.normalize_email(email)
-        user = self.model(email=email, name=name, **kwargs)
+        user = self.model(email=email, **kwargs)
         
         user.set_password(password)
         user.save()
@@ -67,7 +67,6 @@ class CustomUser(AbstractBaseUser):
 
     
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['email']
 
     def get_full_name(self):
         return f"{self.first_name}{self.last_name}"
