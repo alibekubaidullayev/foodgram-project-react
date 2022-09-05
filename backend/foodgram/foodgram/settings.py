@@ -80,6 +80,9 @@ DATABASES = {
 }
 
 REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
     ),
@@ -93,7 +96,9 @@ DJOSER = {
         'user': 'users.serializers.CustomUserSerializer',
         'user_delete': 'djoser.serializers.UserDeleteSerializer'
     },
-    'SEND_CONFIRMATION_EMAIL': True
+    'PERMISSIONS': {'user_list': ['rest_framework.permissions.AllowAny']},
+    'SEND_CONFIRMATION_EMAIL': True,
+    'HIDE_USERS': False,
 }
 
 AUTH_PASSWORD_VALIDATORS = [

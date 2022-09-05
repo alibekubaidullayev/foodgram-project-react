@@ -1,5 +1,4 @@
-from django.contrib.auth.models import BaseUserManager
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.db import models
 
 MAX_LENGTH = 200
@@ -20,7 +19,7 @@ class UserManager(BaseUserManager):
             raise ValueError("Users must have an email address")
         email = self.normalize_email(email)
         user = self.model(email=email, **kwargs)
-        
+
         user.set_password(password)
         user.save()
 
@@ -33,7 +32,7 @@ class UserManager(BaseUserManager):
         return self.create_user(email, password, **kwargs)
 
 
-class CustomUser(AbstractBaseUser):
+class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(
         max_length=EMAIL_LENGTH,
         unique=True,
@@ -63,11 +62,15 @@ class CustomUser(AbstractBaseUser):
         default=USER
     )
 
+    is_active = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
+
     objects = UserManager()
 
-    
     USERNAME_FIELD = 'email'
-
+    REQUIRED_FIELDS = ['first_name', 'last_name']
+    
     def get_full_name(self):
         return f"{self.first_name}{self.last_name}"
 
