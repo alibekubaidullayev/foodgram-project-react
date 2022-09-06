@@ -13,7 +13,7 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'amount', 'unit')
+    list_display = ('id', 'name', 'amount', 'measurement_unit')
     search_fields = ('name',)
     list_filter = ('name',)
     empty_value_display = '-пусто-'
@@ -21,7 +21,7 @@ class IngredientAdmin(admin.ModelAdmin):
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('author', 'name', 'description', 'cooking_time_m')
+    list_display = ('author', 'name', 'text', 'cooking_time')
     search_fields = ('name',)
     list_filter = ('name',)
     empty_value_display = '-пусто-'

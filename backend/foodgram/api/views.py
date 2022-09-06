@@ -29,15 +29,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     pagination_class = PageNumberPagination
-    filter_backends = (DjangoFilterBackend,)
-    filterset_class = RecipeFilter
+    # filter_backends = (DjangoFilterBackend,)
+    # filterset_class = RecipeFilter
 
 
-    def update(self, instance, validated_data):
-        instance.name = validated_data.get('name', instance.name)
-        instance.image = validated_data.get('image', instance.image)
-        instance.description = validated_data.get('description', instance.image)
-        
-    
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+
+    # def update(self, instance, validated_data):
+    #     instance.name = validated_data.get('name', instance.name)
+    #     instance.image = validated_data.get('image', instance.image)
+    #     instance.description = validated_data.get('description', instance.image)
+        
+    

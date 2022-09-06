@@ -6,7 +6,7 @@ from django.core.files.base import ContentFile
 from rest_framework import serializers
 
 from recipes.models import Ingredient, Recipe, Tag
-
+from users.serializers import CustomUserSerializer
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,11 +15,9 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class IngredientSerializer(serializers.ModelSerializer):
-    amount = serializers.IntegerField()
-
     class Meta:
         model = Ingredient
-        fields = ('name', 'amount', 'unit')
+        fields = ('name', 'amount', 'measurement_unit')
 
 
 class Base64ImageField(serializers.ImageField):
@@ -36,14 +34,13 @@ class Base64ImageField(serializers.ImageField):
 class RecipeSerializer(serializers.ModelSerializer):
     ingredients = IngredientSerializer(many=True)
     tags = TagSerializer(many=True)
+    author = CustomUserSerializer()
 
     class Meta:
         model = Recipe
-        # read_only_fields = ('__all__',)
-        fields = ('author', 'name', 'description',
-                  'ingredients', 'tags', 'cooking_time_m')
+        fields = ('author', 'name', 'text',
+                  'ingredients', 'tags', 'cooking_time')
 
     def create(self, validated_data):
-        ingredients = validated_data.pop('ingredients')
-        tags = validated_data.pop('tags')
-        
+        recipe = Recipe.objects.create(**validated_data)
+        return recipe

@@ -17,7 +17,7 @@ class Tag(models.Model):
 class Ingredient(models.Model):
     name = models.CharField(max_length=MAX_LENGTH)
     amount = models.IntegerField()
-    unit = models.CharField(max_length=10)
+    measurement_unit = models.CharField(max_length=10)
 
     def __str__(self):
         return self.name
@@ -35,11 +35,11 @@ class Recipe(models.Model):
         upload_to='dishes/',
         blank=True
     )
-    description = models.TextField()
+    text = models.TextField()
     ingredients = models.ManyToManyField(
         Ingredient, related_name='recipes')
     tags = models.ManyToManyField(Tag, related_name='recipes')
-    cooking_time_m = models.IntegerField()
+    cooking_time = models.IntegerField()
 
     def __str__(self):
         return self.name
