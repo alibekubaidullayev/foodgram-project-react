@@ -11,13 +11,13 @@ from users.serializers import CustomUserSerializer
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ('name', 'hexcolor', 'slug')
+        fields = ('id', 'name', 'color', 'slug')
 
 
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
-        fields = ('name', 'amount', 'measurement_unit')
+        fields = ('id', 'name', 'measurement_unit')
 
 
 class Base64ImageField(serializers.ImageField):
@@ -38,7 +38,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('author', 'name', 'text',
+        fields = ('id', 'author', 'name', 'image','text',
                   'ingredients', 'tags', 'cooking_time')
 
     def create(self, validated_data):
