@@ -37,7 +37,7 @@ class Recipe(models.Model):
         CustomUser, on_delete=models.CASCADE, verbose_name="Author"
     )
     name = models.CharField(max_length=MAX_LENGTH)
-    image = models.ImageField(verbose_name="Image", upload_to="recipes/", blank=True)
+    image = models.ImageField(verbose_name="Image", upload_to="dishes/", blank=True)
     text = models.TextField()
     ingredients = models.ManyToManyField(IngredientRecipe, related_name="recipes")
     tags = models.ManyToManyField(Tag, related_name="recipes")

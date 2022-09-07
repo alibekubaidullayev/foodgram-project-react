@@ -12,7 +12,7 @@ from recipes.models import Ingredient, Recipe, Tag
                             
 
 from .filters import RecipeFilter
-from .serializers import IngredientSerializer, IngredientRecipeSerializer,RecipeSerializer, TagSerializer
+from .serializers import IngredientSerializer,RecipeSerializer, RecipeCreateSerializer, TagSerializer
 
 
 class TagViewSet(viewsets.ModelViewSet):
@@ -36,7 +36,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
         
-
+    def get_serializer_class(self):
+            return RecipeSerializer if self.action in (
+            'list', 'retrieve'
+        ) else RecipeCreateSerializer
+    
     # def update(self, instance, validated_data):
     #     instance.name = validated_data.get('name', instance.name)
     #     instance.image = validated_data.get('image', instance.image)
