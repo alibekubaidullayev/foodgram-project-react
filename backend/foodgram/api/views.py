@@ -12,7 +12,7 @@ from recipes.models import Ingredient, Recipe, Tag
                             
 
 from .filters import RecipeFilter
-from .serializers import IngredientSerializer, RecipeSerializer, TagSerializer
+from .serializers import IngredientSerializer, IngredientRecipeSerializer,RecipeSerializer, TagSerializer
 
 
 class TagViewSet(viewsets.ModelViewSet):
@@ -23,19 +23,19 @@ class TagViewSet(viewsets.ModelViewSet):
 class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
+    pagination_class = None
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     pagination_class = PageNumberPagination
-    # filter_backends = (DjangoFilterBackend,)
-    # filterset_class = RecipeFilter
-
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = RecipeFilter
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
-
+        
 
     # def update(self, instance, validated_data):
     #     instance.name = validated_data.get('name', instance.name)
