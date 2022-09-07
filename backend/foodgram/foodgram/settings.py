@@ -1,5 +1,7 @@
 import os
 
+
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = "7lh_crl4k*=orphz9q4v&&p5$m3n(sn4@q-457@el)j9z$0lb5"
 DEBUG = True
@@ -15,6 +17,8 @@ EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
 CORS_URLS_REGEX = r"^/api/.*$"
 ROOT_URLCONF = "foodgram.urls"
+TMP_FILES_STORAGE = os.path.join(BASE_DIR, "../../tmp_media")
+
 
 ALLOWED_HOSTS = [
     "localhost",
@@ -85,7 +89,6 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.TokenAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 6,

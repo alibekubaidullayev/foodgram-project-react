@@ -9,16 +9,22 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import SAFE_METHODS
 
 from recipes.models import Ingredient, Recipe, Tag
-                            
+
 
 from .filters import RecipeFilter
-from .serializers import IngredientSerializer,RecipeSerializer, RecipeCreateSerializer, TagSerializer
+from .serializers import (
+    IngredientSerializer,
+    RecipeSerializer,
+    RecipeCreateSerializer,
+    TagSerializer,
+)
 
 
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     pagination_class = None
+
 
 class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
@@ -33,17 +39,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
 
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
-        
+    # def perform_create(self, serializer):
+    #     return serializer.save(author=self.request.user)
+
     def get_serializer_class(self):
-            return RecipeSerializer if self.action in (
-            'list', 'retrieve'
-        ) else RecipeCreateSerializer
-    
+        return (
+            RecipeSerializer
+            if self.action in ("list", "retrieve")
+            else RecipeCreateSerializer
+        )
+
     # def update(self, instance, validated_data):
     #     instance.name = validated_data.get('name', instance.name)
     #     instance.image = validated_data.get('image', instance.image)
     #     instance.description = validated_data.get('description', instance.image)
-        
-    
