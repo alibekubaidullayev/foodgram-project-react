@@ -23,15 +23,11 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class IngredientRecipeSerializer(serializers.ModelSerializer):
-    # id = serializers.PrimaryKeyRelatedField(
-    #     queryset=Ingredient.objects.all(), write_only=True
-    # )
+    id = serializers.PrimaryKeyRelatedField(
+        queryset=Ingredient.objects.all(), write_only=True
+    )
 
-    id = serializers.SerializerMethodField()
     name = serializers.SerializerMethodField()
-
-    def get_id(self, obj):
-        return obj.ingredient_id
 
     def get_name(self, obj):
         name = Ingredient.objects.filter(pk=obj.ingredient_id).values()[0]['name']
