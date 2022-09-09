@@ -1,14 +1,11 @@
-from django.core.mail import send_mail
-from django.db import IntegrityError
-from django.shortcuts import get_object_or_404
-from django.utils.crypto import get_random_string
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
-from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import SAFE_METHODS
+from rest_framework.response import Response
 
-from recipes.models import Ingredient, Recipe, Tag
+from recipes.models import Ingredient, Recipe, Tag, Favorite
 
 
 from .filters import RecipeFilter
@@ -46,6 +43,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
             else RecipeCreateSerializer
         )
 
+    @action(methods=['POST', 'DELETE'], detail=True)
+    def favorite(self, request, *args, **kwargs):
+        user = request.user
+        recipe = self.get_object()
+        if request.method == 'POST':
+            Favorite.objects.create(user=user, recipe=recipe)
+            return Response(status=status.HTTP_201_CREATED)
+        elif request.method == 'POST':
+            favorite = Favorite.objects.filter(user=user, recipe=recipe)
+            favorite.delete()
+            return Response(status=status.HTTP_200_OK)
     # def update(self, instance, validated_data):
     #     instance.name = validated_data.get('name', instance.name)
     #     instance.image = validated_data.get('image', instance.image)

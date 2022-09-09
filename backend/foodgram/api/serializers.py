@@ -6,8 +6,10 @@ from wsgiref import validate
 from django.core.files.base import ContentFile
 from rest_framework import serializers
 
-from recipes.models import Ingredient, IngredientRecipe, Recipe, Tag
+from recipes.models import Ingredient, IngredientRecipe, Recipe, Tag, Favorite
+from users.models import CustomUser
 from users.serializers import CustomUserSerializer
+
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -54,6 +56,16 @@ class RecipeSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True)
     author = CustomUserSerializer()
 
+    is_favorited = serializers.SerializerMethodField()
+
+    def get_is_favorited(self, obj):
+        request = self.context.get('request', None)
+        user = request.user
+        if not isinstance(user, CustomUser):
+            return False
+
+        return Favorite.objects.filter(user=user, recipe=obj).exists()
+
     class Meta:
         model = Recipe
         fields = (
@@ -65,6 +77,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             "ingredients",
             "tags",
             "cooking_time",
+            "is_favorited"
         )
         read_only_fields = ("author", "tags")
 

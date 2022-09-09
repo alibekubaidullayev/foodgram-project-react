@@ -29,7 +29,7 @@ class IngredientRecipe(models.Model):
     amount = models.IntegerField()
 
     def __str__(self):
-        return self.name
+        return self.ingredient.name
 
 
 class Recipe(models.Model):
@@ -50,6 +50,21 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name="favourite_user",
+        verbose_name="user",
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name="favourite_recipe",
+        verbose_name="recipe",
+    )
 
 
 class Follow(models.Model):
