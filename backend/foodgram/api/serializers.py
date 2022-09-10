@@ -4,6 +4,7 @@ from wsgiref import validate
 
 
 from django.core.files.base import ContentFile
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
 from recipes.models import Ingredient, IngredientRecipe, Recipe, Tag, Favorite
@@ -24,11 +25,13 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class IngredientRecipeSerializer(serializers.ModelSerializer):
-    id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
     name = serializers.SerializerMethodField()
     measurement_unit = serializers.SerializerMethodField()
-
-
+    id = serializers.SerializerMethodField()
+    
+    def get_id(self, obj):
+        return obj.ingredient_id
+    
     def get_name(self, obj):
         name = Ingredient.objects.filter(pk=obj.ingredient_id).values()[0]["name"]
         return name
@@ -112,26 +115,25 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         author = self.context.get("request").user
         recipe = Recipe.objects.create(**validated_data, author=author)
         for ingredient in ingredients:
-            amount = ingredient['amount']
-            ingr = IngredientRecipe.objects.create(
-                recipe=recipe, ingredient=ingredient['id'], amount=amount
+            IngredientRecipe.objects.create(
+                recipe=recipe, ingredient=ingredient["id"], amount=ingredient["amount"]
             )
-            recipe.ingredients.add(ingr)
         recipe.tags.set(tags)
         return recipe
 
-    # def update(self, instance, validated_data):
-    #     instance.name = validated_data.get("name", instance.name)
-    #     instance.image = validated_data.get("image", instance.image)
-    #     instance.text = validated_data.get("text", instance.image)
-    #     ingredients = validated_data.get("ingredients")
-    #     for ingredient in ingredients:
-    #         ingredient_instance = Ingredient.objects.get(id=ingredient["id"].id)
-    #         amount = ingredient["amount"]
-    #         ingr = IngredientRecipe.objects.create(
-    #             ingredient=ingredient_instance, amount=amount
-    #         )
-    #         instance.ingredients.add(ingr)
-    #     tags = validated_data.get("tags", instance.tags)
-    #     instance.tags.set(tags)
-    #     return instance
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get("name", instance.name)
+        instance.image = validated_data.get("image", instance.image)
+        instance.text = validated_data.get("text", instance.image)
+        ingredients = self.initial_data.get('ingredients')
+        IngredientRecipe.objects.filter(recipe=instance).delete()
+        for ingredient in ingredients:
+            ingredient_origin = get_object_or_404(Ingredient, pk=int(ingredient["id"]))
+            IngredientRecipe.objects.create(
+                recipe=instance,
+                ingredient=ingredient_origin,
+                amount=ingredient["amount"],
+            )
+        tags = validated_data.get("tags", instance.tags)
+        instance.tags.set(tags)
+        return instance
