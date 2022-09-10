@@ -50,11 +50,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if request.method == 'POST':
             Favorite.objects.create(user=user, recipe=recipe)
             return Response(status=status.HTTP_201_CREATED)
-        elif request.method == 'POST':
+        elif request.method == 'DELETE':
             favorite = Favorite.objects.filter(user=user, recipe=recipe)
             favorite.delete()
             return Response(status=status.HTTP_200_OK)
-    # def update(self, instance, validated_data):
-    #     instance.name = validated_data.get('name', instance.name)
-    #     instance.image = validated_data.get('image', instance.image)
-    #     instance.description = validated_data.get('description', instance.image)
+
+    def perform_update(self, serializer, pk=None):
+        instance = self.get_object()
+        if self.request.user.is_authenticated:
+            updated_instance = serializer.save(author=self.request.user)
+        else:
+            updated_instance = serializer.save()
