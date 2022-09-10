@@ -28,10 +28,10 @@ class IngredientRecipeSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     measurement_unit = serializers.SerializerMethodField()
     id = serializers.SerializerMethodField()
-    
+
     def get_id(self, obj):
         return obj.ingredient_id
-    
+
     def get_name(self, obj):
         name = Ingredient.objects.filter(pk=obj.ingredient_id).values()[0]["name"]
         return name
@@ -124,8 +124,11 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.name = validated_data.get("name", instance.name)
         instance.image = validated_data.get("image", instance.image)
-        instance.text = validated_data.get("text", instance.image)
-        ingredients = self.initial_data.get('ingredients')
+        instance.text = validated_data.get("text", instance.text)
+        instance.cooking_time = validated_data.get("cooking_time", instance.text)
+        ingredients = self.initial_data.get("ingredients")
+        tags = self.initial_data.get("tags")
+        instance.tags.set(tags)
         IngredientRecipe.objects.filter(recipe=instance).delete()
         for ingredient in ingredients:
             ingredient_origin = get_object_or_404(Ingredient, pk=int(ingredient["id"]))
@@ -134,6 +137,5 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 ingredient=ingredient_origin,
                 amount=ingredient["amount"],
             )
-        tags = validated_data.get("tags", instance.tags)
-        instance.tags.set(tags)
+        instance.save()
         return instance
