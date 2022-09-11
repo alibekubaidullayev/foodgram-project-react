@@ -1,7 +1,5 @@
 import os
 
-
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = "7lh_crl4k*=orphz9q4v&&p5$m3n(sn4@q-457@el)j9z$0lb5"
 DEBUG = True
@@ -82,7 +80,7 @@ DATABASES = {
         "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
 }
-
+DEFAULT_PAGINATION_CLASS = "rest_framework.pagination.PageNumberPagination"
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",
@@ -90,7 +88,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.TokenAuthentication",
     ),
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "DEFAULT_PAGINATION_CLASS": DEFAULT_PAGINATION_CLASS,
     "PAGE_SIZE": 6,
 }
 

@@ -1,20 +1,14 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
-from recipes.models import Ingredient, Recipe, Tag, Favorite
-
+from recipes.models import Favorite, Ingredient, Recipe, Tag
 
 from .filters import RecipeFilter
-from .serializers import (
-    IngredientSerializer,
-    RecipeSerializer,
-    RecipeCreateSerializer,
-    TagSerializer,
-)
+from .serializers import (IngredientSerializer, RecipeCreateSerializer,
+                          RecipeSerializer, TagSerializer)
 
 
 class TagViewSet(viewsets.ModelViewSet):

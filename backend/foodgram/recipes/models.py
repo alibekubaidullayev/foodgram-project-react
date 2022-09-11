@@ -1,5 +1,5 @@
 from django.db import models
-from django.conf import settings
+
 from users.models import CustomUser
 
 MAX_LENGTH = 200
@@ -27,16 +27,16 @@ class Recipe(models.Model):
         CustomUser, on_delete=models.CASCADE, verbose_name="Author"
     )
     name = models.CharField(max_length=MAX_LENGTH)
-    image = models.ImageField(verbose_name="Image", upload_to="tmp_media/", blank=True)
+    image = models.ImageField(verbose_name="Image", upload_to="tmp_media/")
     text = models.TextField()
     tags = models.ManyToManyField(Tag, related_name="recipes")
     cooking_time = models.IntegerField()
-    
+
     def create(self, validated_data):
         image = validated_data.pop("image")
         recipe = Recipe.objects.create(image=image, **validated_data)
         return recipe
-    
+
     # def __str__(self):
     #     return f'{self.name} {self.text} {self.ingredients}'
 
@@ -51,7 +51,7 @@ class IngredientRecipe(models.Model):
     amount = models.IntegerField()
 
     def __str__(self):
-        return f'{self.amount} of {self.ingredient.name} in {self.recipe.name}'
+        return f"{self.amount} of {self.ingredient.name} in {self.recipe.name}"
 
 
 class Favorite(models.Model):

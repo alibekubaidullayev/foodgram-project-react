@@ -1,13 +1,10 @@
 import base64
-import datetime as dt
-from wsgiref import validate
-
 
 from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
-from recipes.models import Ingredient, IngredientRecipe, Recipe, Tag, Favorite, Follow
+from recipes.models import Favorite, Ingredient, IngredientRecipe, Recipe, Tag
 from users.models import CustomUser
 from users.serializers import CustomUserSerializer
 
@@ -33,7 +30,8 @@ class IngredientRecipeSerializer(serializers.ModelSerializer):
         return obj.ingredient_id
 
     def get_name(self, obj):
-        name = Ingredient.objects.filter(pk=obj.ingredient_id).values()[0]["name"]
+        ingredient = Ingredient.objects.filter(pk=obj.ingredient_id)
+        name = ingredient.values()[0]["name"]
         return name
 
     def get_measurement_unit(self, obj):
@@ -64,8 +62,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     author = CustomUserSerializer()
 
     is_favorited = serializers.SerializerMethodField()
-    
-    
+
     def get_is_favorited(self, obj):
         request = self.context.get("request", None)
         user = request.user
@@ -73,7 +70,6 @@ class RecipeSerializer(serializers.ModelSerializer):
             return False
 
         return Favorite.objects.filter(user=user, recipe=obj).exists()
-
 
     class Meta:
         model = Recipe
@@ -119,9 +115,11 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         recipe = Recipe.objects.create(**validated_data, author=author)
         recipe.tags.set(tags)
         for ingredient in ingredients:
-            ingredient_origin = get_object_or_404(Ingredient, pk=int(ingredient["id"]))
+            ingredient_pk = int(ingredient["id"])
+            ingredient_origin = get_object_or_404(Ingredient, pk=ingredient_pk)
+            amount = ingredient["amount"]
             IngredientRecipe.objects.create(
-                recipe=recipe, ingredient=ingredient_origin, amount=ingredient["amount"]
+                recipe=recipe, ingredient=ingredient_origin, amount=amount
             )
         return recipe
 
@@ -129,13 +127,16 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         instance.name = validated_data.get("name", instance.name)
         instance.image = validated_data.get("image", instance.image)
         instance.text = validated_data.get("text", instance.text)
-        instance.cooking_time = validated_data.get("cooking_time", instance.text)
+        instance.cooking_time = validated_data.get(
+            "cooking_time", instance.cooking_time
+        )
         ingredients = self.initial_data.get("ingredients")
         tags = self.initial_data.get("tags")
         instance.tags.set(tags)
         IngredientRecipe.objects.filter(recipe=instance).delete()
         for ingredient in ingredients:
-            ingredient_origin = get_object_or_404(Ingredient, pk=int(ingredient["id"]))
+            ingredient_pk = int(ingredient["id"])
+            ingredient_origin = get_object_or_404(Ingredient, pk=ingredient_pk)
             IngredientRecipe.objects.create(
                 recipe=instance,
                 ingredient=ingredient_origin,

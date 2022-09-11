@@ -1,14 +1,15 @@
 from djoser.serializers import UserCreateSerializer
-from .models import CustomUser
 from rest_framework import serializers
 
 from recipes.models import Follow
 
+from .models import CustomUser
+
+
 class CustomUserSerializer(UserCreateSerializer):
-    
+
     is_subscribed = serializers.SerializerMethodField()
 
-    
     def get_is_subscribed(self, obj):
         request = self.context.get("request", None)
         user = request.user

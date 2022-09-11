@@ -1,11 +1,9 @@
-from rest_framework import viewsets
-from rest_framework.response import Response
-from rest_framework import status
-from .models import CustomUser
-from .serializers import CustomUserSerializer
-from recipes.models import Follow
-from rest_framework.decorators import action
 from djoser.views import UserViewSet
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+
+from recipes.models import Follow
 
 
 class CustomUserViewSet(UserViewSet):

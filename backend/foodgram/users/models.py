@@ -1,16 +1,17 @@
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin,
+)
 from django.db import models
 
 MAX_LENGTH = 200
-USER = 'user'
-ADMIN = 'admin'
+USER = "user"
+ADMIN = "admin"
 USERNAME_LENGTH = 150
 EMAIL_LENGTH = 254
-
-ROLES = {
-    (USER, 'User'),
-    (ADMIN, 'Administrator')
-}
+NAME_ARGS = {"max_length": USERNAME_LENGTH, "blank": True, "null": True}
+ROLES = {(USER, "User"), (ADMIN, "Administrator")}
 
 
 class UserManager(BaseUserManager):
@@ -25,41 +26,29 @@ class UserManager(BaseUserManager):
 
         return user
 
-    def create_superuser(self, email,  password=None, **kwargs):
-        kwargs.setdefault('is_active', True)
-        kwargs.setdefault('is_staff', True)
-        kwargs.setdefault('is_superuser', True)
+    def create_superuser(self, email, password=None, **kwargs):
+        kwargs.setdefault("is_active", True)
+        kwargs.setdefault("is_staff", True)
+        kwargs.setdefault("is_superuser", True)
         return self.create_user(email, password, **kwargs)
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(
-        max_length=EMAIL_LENGTH,
-        unique=True,
-        verbose_name='Электронная почта'
+        max_length=EMAIL_LENGTH, unique=True, verbose_name="Электронная почта"
     )
     username = models.CharField(
-        'Имя пользователя',
+        "Имя пользователя",
         max_length=USERNAME_LENGTH,
         unique=True,
     )
-    first_name = models.CharField(
-        'Имя пользователя',
-        max_length=USERNAME_LENGTH,
-        blank=True,
-        null=True
-    )
-    last_name = models.CharField(
-        'Фамилия пользователя',
-        max_length=USERNAME_LENGTH,
-        blank=True,
-        null=True
-    )
+    first_name = models.CharField(verbose_name="Имя", **NAME_ARGS)
+    last_name = models.CharField(verbose_name="Фамилия", **NAME_ARGS)
     role = models.CharField(
-        verbose_name='Роль',
+        verbose_name="Роль",
         max_length=max(len(role) for role, _ in ROLES),
         choices=ROLES,
-        default=USER
+        default=USER,
     )
 
     is_active = models.BooleanField(default=True)
@@ -68,9 +57,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name']
-    
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["first_name", "last_name"]
+
     def get_full_name(self):
         return f"{self.first_name}{self.last_name}"
 
