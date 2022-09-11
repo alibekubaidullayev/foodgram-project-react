@@ -1,26 +1,21 @@
 from rest_framework import viewsets
-from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.decorators import action
 from rest_framework import status
-from rest_framework.response import Response
-
 from .models import CustomUser
 from .serializers import CustomUserSerializer
+from recipes.models import Follow
+from rest_framework.decorators import action
+from djoser.views import UserViewSet
 
 
-class CustomUserViewSet(viewsets.ModelViewSet):
-    queryset = CustomUser.objects.all()
-    serializer_class = CustomUserSerializer
-
-    # def perform_create(self, serializer):
-    #     user=self.request.user
-    #     serializer.save(user=user)
-
-
-    # @action(methods=['POST', 'DELETE'], detail=True)
-    # def subscribe(self, request, *args, **kwargs):
-    #     user = request.user
-    #     recipe = self.get_object()
-    #     return Response(status=status.HTTP_200_OK)
-
+class CustomUserViewSet(UserViewSet):
+    @action(methods=["POST", "DELETE"], detail=True)
+    def subscribe(self, request, *args, **kwargs):
+        author = self.get_object()
+        if request.method == "POST":
+            Follow.objects.create(user=request.user, following=author)
+            return Response(status=status.HTTP_201_CREATED)
+        elif request.method == "DELETE":
+            follow = Follow.objects.filter(user=request.user, following=author)
+            follow.delete()
+            return Response(status=status.HTTP_200_OK)

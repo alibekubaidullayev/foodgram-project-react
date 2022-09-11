@@ -7,7 +7,7 @@ from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
-from recipes.models import Ingredient, IngredientRecipe, Recipe, Tag, Favorite
+from recipes.models import Ingredient, IngredientRecipe, Recipe, Tag, Favorite, Follow
 from users.models import CustomUser
 from users.serializers import CustomUserSerializer
 
@@ -64,7 +64,8 @@ class RecipeSerializer(serializers.ModelSerializer):
     author = CustomUserSerializer()
 
     is_favorited = serializers.SerializerMethodField()
-
+    
+    
     def get_is_favorited(self, obj):
         request = self.context.get("request", None)
         user = request.user
@@ -72,6 +73,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             return False
 
         return Favorite.objects.filter(user=user, recipe=obj).exists()
+
 
     class Meta:
         model = Recipe
@@ -119,9 +121,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         for ingredient in ingredients:
             ingredient_origin = get_object_or_404(Ingredient, pk=int(ingredient["id"]))
             IngredientRecipe.objects.create(
-                recipe=recipe,
-                ingredient=ingredient_origin,
-                amount=ingredient["amount"]
+                recipe=recipe, ingredient=ingredient_origin, amount=ingredient["amount"]
             )
         return recipe
 
