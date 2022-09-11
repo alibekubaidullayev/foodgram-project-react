@@ -37,9 +37,6 @@ class Recipe(models.Model):
         recipe = Recipe.objects.create(image=image, **validated_data)
         return recipe
 
-    # def __str__(self):
-    #     return f'{self.name} {self.text} {self.ingredients}'
-
 
 class IngredientRecipe(models.Model):
     ingredient = models.ForeignKey(
@@ -65,6 +62,21 @@ class Favorite(models.Model):
         Recipe,
         on_delete=models.CASCADE,
         related_name="is_favorited",
+        verbose_name="recipe",
+    )
+
+
+class ShoppingCart(models.Model):
+    owner = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name="cart_owner",
+        verbose_name="user",
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name="shopping_cart",
         verbose_name="recipe",
     )
 

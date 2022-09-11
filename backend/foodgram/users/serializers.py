@@ -12,6 +12,8 @@ class CustomUserSerializer(UserCreateSerializer):
 
     def get_is_subscribed(self, obj):
         request = self.context.get("request", None)
+        if not request:
+            return False
         user = request.user
         if not isinstance(user, CustomUser):
             return False

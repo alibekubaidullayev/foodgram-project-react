@@ -4,7 +4,14 @@ from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
-from recipes.models import Favorite, Ingredient, IngredientRecipe, Recipe, Tag
+from recipes.models import (
+    Favorite,
+    Ingredient,
+    IngredientRecipe,
+    Recipe,
+    ShoppingCart,
+    Tag,
+)
 from users.models import CustomUser
 from users.serializers import CustomUserSerializer
 
@@ -62,14 +69,26 @@ class RecipeSerializer(serializers.ModelSerializer):
     author = CustomUserSerializer()
 
     is_favorited = serializers.SerializerMethodField()
+    is_in_shopping_cart = serializers.SerializerMethodField()
 
     def get_is_favorited(self, obj):
         request = self.context.get("request", None)
+        if not request:
+            return False
         user = request.user
         if not isinstance(user, CustomUser):
             return False
 
         return Favorite.objects.filter(user=user, recipe=obj).exists()
+
+    def get_is_in_shopping_cart(self, obj):
+        request = self.context.get("request", None)
+        if not request:
+            return False
+        user = request.user
+        if not isinstance(user, CustomUser):
+            return False
+        return ShoppingCart.objects.filter(owner=user, recipe=obj).exists()
 
     class Meta:
         model = Recipe
@@ -79,6 +98,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             "author",
             "ingredients",
             "is_favorited",
+            "is_in_shopping_cart",
             "name",
             "image",
             "text",
