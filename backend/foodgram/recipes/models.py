@@ -31,12 +31,12 @@ class Recipe(models.Model):
     text = models.TextField()
     tags = models.ManyToManyField(Tag, related_name="recipes")
     cooking_time = models.IntegerField()
-
+    
     def create(self, validated_data):
         image = validated_data.pop("image")
         recipe = Recipe.objects.create(image=image, **validated_data)
         return recipe
-
+    
     # def __str__(self):
     #     return f'{self.name} {self.text} {self.ingredients}'
 
@@ -64,7 +64,7 @@ class Favorite(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name="favourite_recipe",
+        related_name="is_favorited",
         verbose_name="recipe",
     )
 

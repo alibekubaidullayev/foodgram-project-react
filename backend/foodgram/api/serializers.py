@@ -110,15 +110,19 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         read_only_fields = ("author",)
 
     def create(self, validated_data):
-        ingredients = validated_data.pop("ingredients")
+        validated_data.pop("ingredients")
+        ingredients = self.initial_data.get("ingredients")
         tags = validated_data.pop("tags")
         author = self.context.get("request").user
         recipe = Recipe.objects.create(**validated_data, author=author)
-        for ingredient in ingredients:
-            IngredientRecipe.objects.create(
-                recipe=recipe, ingredient=ingredient["id"], amount=ingredient["amount"]
-            )
         recipe.tags.set(tags)
+        for ingredient in ingredients:
+            ingredient_origin = get_object_or_404(Ingredient, pk=int(ingredient["id"]))
+            IngredientRecipe.objects.create(
+                recipe=recipe,
+                ingredient=ingredient_origin,
+                amount=ingredient["amount"]
+            )
         return recipe
 
     def update(self, instance, validated_data):

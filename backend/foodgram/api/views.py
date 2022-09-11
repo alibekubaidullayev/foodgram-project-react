@@ -36,6 +36,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
 
+    def get_queryset(self):
+        queryset = Recipe.objects.all()
+        is_favorited = self.request.query_params.get("is_favorited")
+        if is_favorited:
+            favorites = Favorite.objects.filter(user=self.request.user)
+            recipes = []
+            for f in favorites:
+                recipes.append(f.recipe.id)
+            queryset = queryset.filter(id__in=recipes)
+        return queryset
+
     def get_serializer_class(self):
         return (
             RecipeSerializer
@@ -43,14 +54,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
             else RecipeCreateSerializer
         )
 
-    @action(methods=['POST', 'DELETE'], detail=True)
+    @action(methods=["POST", "DELETE"], detail=True)
     def favorite(self, request, *args, **kwargs):
         user = request.user
         recipe = self.get_object()
-        if request.method == 'POST':
+        if request.method == "POST":
             Favorite.objects.create(user=user, recipe=recipe)
             return Response(status=status.HTTP_201_CREATED)
-        elif request.method == 'DELETE':
+        elif request.method == "DELETE":
             favorite = Favorite.objects.filter(user=user, recipe=recipe)
             favorite.delete()
             return Response(status=status.HTTP_200_OK)
@@ -61,3 +72,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
             updated_instance = serializer.save(author=self.request.user)
         else:
             updated_instance = serializer.save()
+
+    def perform_destroy(self, instance):
+        instance.delete()
+
+
+class FavoriteViewSet(viewsets.ModelViewSet):
+    serializer_class = RecipeSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Favorite.objects.filter(user=user).values("recipe")
+        return queryset
