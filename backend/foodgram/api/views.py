@@ -1,19 +1,18 @@
-from django_filters.rest_framework import DjangoFilterBackend
+import json
+
 from django.http import HttpResponse
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets
-from rest_framework import permissions
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+
 from recipes.models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
-import json
+
 from .filters import RecipeFilter
-from .serializers import (
-    IngredientSerializer,
-    RecipeCreateSerializer,
-    RecipeSerializer,
-    TagSerializer,
-)
+from .permissions import IsAuthorOrReadOnly
+from .serializers import (IngredientSerializer, RecipeCreateSerializer,
+                          RecipeSerializer, TagSerializer)
 
 
 class TagViewSet(viewsets.ModelViewSet):
@@ -34,12 +33,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (IsAuthorOrReadOnly,)
 
     def get_queryset(self):
+        request = self.request
         queryset = Recipe.objects.all()
-        is_favorited = self.request.query_params.get("is_favorited")
-        is_in_shopping_cart = self.request.query_params.get("is_in_shopping_cart")
+        is_favorited = request.query_params.get("is_favorited")
+        is_in_shopping_cart = request.query_params.get("is_in_shopping_cart")
+
         if is_favorited:
             favorites = Favorite.objects.filter(user=self.request.user)
             recipes = []
@@ -95,14 +96,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
             recipes.append(cart.recipe.id)
         queryset = self.queryset.filter(id__in=recipes)
         serializer = RecipeSerializer(queryset)
-        return HttpResponse(json.dumps(serializer), content_type="application/json")
+        return HttpResponse(json.dumps(serializer))
 
     def perform_update(self, serializer, pk=None):
-        instance = self.get_object()
         if self.request.user.is_authenticated:
-            updated_instance = serializer.save(author=self.request.user)
-        else:
-            updated_instance = serializer.save()
+            serializer.save(author=self.request.user)
 
     def perform_destroy(self, instance):
         instance.delete()

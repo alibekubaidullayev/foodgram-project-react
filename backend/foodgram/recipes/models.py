@@ -1,3 +1,4 @@
+from django.contrib import admin
 from django.db import models
 
 from users.models import CustomUser
@@ -36,6 +37,10 @@ class Recipe(models.Model):
         image = validated_data.pop("image")
         recipe = Recipe.objects.create(image=image, **validated_data)
         return recipe
+
+    @admin.display(description="Count of favorite")
+    def favorite_count(self):
+        return Favorite.objects.filter(recipe=self).count()
 
 
 class IngredientRecipe(models.Model):
