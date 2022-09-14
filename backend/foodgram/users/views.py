@@ -1,12 +1,34 @@
 from djoser.views import UserViewSet
 from rest_framework import status
+from rest_framework import permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
-
+from rest_framework import pagination
 from recipes.models import Follow
+
+from .serializers import CustomUserSubscriptionSerializer
 
 
 class CustomUserViewSet(UserViewSet):
+    permission_classes = (permissions.IsAuthenticated,)
+    pagination_class = pagination.PageNumberPagination
+
+    @action(detail=False)
+    def subscriptions(self, request, *args, **kwargs):
+        follows = Follow.objects.filter(user=request.user)
+        authors = []
+
+        for follow in follows:
+            authors.append(follow.following)
+
+        data = self.paginate_queryset(
+            CustomUserSubscriptionSerializer(
+                authors, many=True, context={"request": request}
+            ).data
+        )
+
+        return self.get_paginated_response(data)
+
     @action(methods=["POST", "DELETE"], detail=True)
     def subscribe(self, request, *args, **kwargs):
         author = self.get_object()

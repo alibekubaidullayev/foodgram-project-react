@@ -1,11 +1,11 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from django.http import HttpResponse
 from rest_framework import status, viewsets
+from rest_framework import permissions
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from recipes.models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
-from django.core import serializers
 import json
 from .filters import RecipeFilter
 from .serializers import (
@@ -34,6 +34,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
+    permission_classes = (permissions.AllowAny,)
 
     def get_queryset(self):
         queryset = Recipe.objects.all()

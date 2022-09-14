@@ -15,8 +15,8 @@ EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
 CORS_URLS_REGEX = r"^/api/.*$"
 ROOT_URLCONF = "foodgram.urls"
-TMP_FILES_STORAGE = os.path.join(BASE_DIR, "../../tmp_media")
-
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 ALLOWED_HOSTS = [
     "localhost",
@@ -90,6 +90,7 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_PAGINATION_CLASS": DEFAULT_PAGINATION_CLASS,
     "PAGE_SIZE": 6,
+    "UPLOADED_FILES_USE_URL": True,
 }
 
 DJOSER = {
