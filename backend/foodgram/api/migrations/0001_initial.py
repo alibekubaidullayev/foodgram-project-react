@@ -15,34 +15,75 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Ingredient',
+            name="Ingredient",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=200)),
-                ('amount', models.IntegerField()),
-                ('unit', models.CharField(max_length=10)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=200)),
+                ("amount", models.IntegerField()),
+                ("unit", models.CharField(max_length=10)),
             ],
         ),
         migrations.CreateModel(
-            name='Tag',
+            name="Tag",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=200)),
-                ('hexcolor', models.CharField(max_length=7)),
-                ('slug', models.SlugField(unique=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=200)),
+                ("hexcolor", models.CharField(max_length=7)),
+                ("slug", models.SlugField(unique=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Recipe',
+            name="Recipe",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=200)),
-                ('image', models.ImageField(blank=True, upload_to='dishes/', verbose_name='Image')),
-                ('description', models.TextField()),
-                ('cooking_time_m', models.IntegerField()),
-                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='Author')),
-                ('ingredients', models.ManyToManyField(related_name='recipes', to='api.Ingredient')),
-                ('tags', models.ManyToManyField(related_name='recipes', to='api.Tag')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=200)),
+                (
+                    "image",
+                    models.ImageField(
+                        blank=True, upload_to="dishes/", verbose_name="Image"
+                    ),
+                ),
+                ("description", models.TextField()),
+                ("cooking_time_m", models.IntegerField()),
+                (
+                    "author",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="Author",
+                    ),
+                ),
+                (
+                    "ingredients",
+                    models.ManyToManyField(
+                        related_name="recipes", to="api.Ingredient"),
+                ),
+                ("tags", models.ManyToManyField(
+                    related_name="recipes", to="api.Tag")),
             ],
         ),
     ]

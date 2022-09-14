@@ -107,7 +107,8 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "tags",
-                    models.ManyToManyField(related_name="recipes", to="recipes.tag"),
+                    models.ManyToManyField(
+                        related_name="recipes", to="recipes.tag"),
                 ),
             ],
         ),

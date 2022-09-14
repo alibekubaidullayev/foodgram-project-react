@@ -24,7 +24,8 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("password", models.CharField(max_length=128, verbose_name="password")),
+                ("password", models.CharField(
+                    max_length=128, verbose_name="password")),
                 (
                     "last_login",
                     models.DateTimeField(
@@ -34,13 +35,17 @@ class Migration(migrations.Migration):
                 (
                     "email",
                     models.EmailField(
-                        max_length=254, unique=True, verbose_name="Электронная почта"
+                        max_length=254,
+                        unique=True,
+                        verbose_name="Электронная почта"
                     ),
                 ),
                 (
                     "username",
                     models.CharField(
-                        max_length=150, unique=True, verbose_name="Имя пользователя"
+                        max_length=150,
+                        unique=True,
+                        verbose_name="Имя пользователя"
                     ),
                 ),
                 (
@@ -77,7 +82,9 @@ class Migration(migrations.Migration):
                     "groups",
                     models.ManyToManyField(
                         blank=True,
-                        help_text="The groups this user belongs to. A user will get all permissions granted to each of their groups.",
+                        help_text=("The groups this user belongs to."
+                                   " A user will get all permissions granted "
+                                   "to each of their groups."),
                         related_name="user_set",
                         related_query_name="user",
                         to="auth.group",
