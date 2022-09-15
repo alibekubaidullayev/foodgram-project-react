@@ -5,6 +5,7 @@ from rest_framework.response import Response
 
 from recipes.models import Follow
 
+from .models import CustomUser
 from .serializers import CustomUserSubscriptionSerializer
 
 
@@ -15,17 +16,12 @@ class CustomUserViewSet(UserViewSet):
     @action(detail=False)
     def subscriptions(self, request, *args, **kwargs):
         follows = Follow.objects.filter(user=request.user)
-        authors = []
-
-        for follow in follows:
-            authors.append(follow.following)
-
-        data = self.paginate_queryset(
-            CustomUserSubscriptionSerializer(
-                authors, many=True, context={"request": request}
-            ).data
+        authors = follows.values_list("following", flat=True)
+        authors = CustomUser.objects.filter(id__in=authors)
+        serializer = CustomUserSubscriptionSerializer(
+            authors, many=True, context={"request": request}
         )
-
+        data = self.paginate_queryset(serializer.data)
         return self.get_paginated_response(data)
 
     @action(methods=["POST", "DELETE"], detail=True)

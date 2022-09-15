@@ -2,7 +2,6 @@ from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 
 from recipes.models import Follow, Recipe
-
 from .models import CustomUser
 
 
@@ -45,7 +44,6 @@ class RecipeSubscriptionSerializer(serializers.ModelSerializer):
 
 
 class CustomUserSubscriptionSerializer(UserCreateSerializer):
-
     is_subscribed = serializers.SerializerMethodField()
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
