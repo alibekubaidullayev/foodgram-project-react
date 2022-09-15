@@ -19,6 +19,13 @@ from .serializers import (
 )
 
 
+FAV_CART_ARGS = {
+    "methods": ["POST", "DELETE"],
+    "detail": True,
+    "permission_classes": (permissions.IsAuthenticated,),
+}
+
+
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
@@ -46,37 +53,24 @@ class RecipeViewSet(viewsets.ModelViewSet):
             else RecipeCreateSerializer
         )
 
-    @action(
-        methods=["POST", "DELETE"],
-        detail=True,
-        permission_classes=(permissions.IsAuthenticated,),
-    )
-    def favorite(self, request, *args, **kwargs):
+    def _favorite_cart(self, request, model):
         user = request.user
         recipe = self.get_object()
         if request.method == "POST":
-            Favorite.objects.create(user=user, recipe=recipe)
+            model.objects.create(user=user, recipe=recipe)
             return Response(status=status.HTTP_201_CREATED)
         elif request.method == "DELETE":
-            favorite = Favorite.objects.filter(user=user, recipe=recipe)
+            favorite = model.objects.filter(user=user, recipe=recipe)
             favorite.delete()
             return Response(status=status.HTTP_200_OK)
 
-    @action(
-        methods=["POST", "DELETE"],
-        detail=True,
-        permission_classes=(permissions.IsAuthenticated,),
-    )
+    @action(**FAV_CART_ARGS)
+    def favorite(self, request, *args, **kwargs):
+        return self._favorite_cart(request, Favorite)
+
+    @action(**FAV_CART_ARGS)
     def shopping_cart(self, request, *args, **kwargs):
-        user = request.user
-        recipe = self.get_object()
-        if request.method == "POST":
-            ShoppingCart.objects.create(user=user, recipe=recipe)
-            return Response(status=status.HTTP_201_CREATED)
-        elif request.method == "DELETE":
-            cart = ShoppingCart.objects.filter(user=user, recipe=recipe)
-            cart.delete()
-            return Response(status=status.HTTP_200_OK)
+        return self._favorite_cart(request, ShoppingCart)
 
     @action(detail=False)
     def download_shopping_cart(self, request, *args, **kwargs):
