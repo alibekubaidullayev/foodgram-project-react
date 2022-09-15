@@ -72,7 +72,7 @@ class Favorite(models.Model):
 
 
 class ShoppingCart(models.Model):
-    owner = models.ForeignKey(
+    user = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,
         related_name="cart_owner",

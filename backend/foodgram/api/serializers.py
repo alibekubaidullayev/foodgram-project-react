@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+
 from rest_framework import serializers
 
 from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
@@ -70,7 +71,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         user = request.user
         if not isinstance(user, CustomUser):
             return False
-        return ShoppingCart.objects.filter(owner=user, recipe=obj).exists()
+        return ShoppingCart.objects.filter(user=user, recipe=obj).exists()
 
     class Meta:
         model = Recipe
