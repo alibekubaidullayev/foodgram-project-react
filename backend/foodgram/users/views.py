@@ -4,7 +4,6 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from recipes.models import Follow
-
 from .models import CustomUser
 from .serializers import CustomUserSubscriptionSerializer
 

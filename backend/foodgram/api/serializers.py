@@ -2,11 +2,16 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework import serializers
 
-from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
-                            ShoppingCart, Tag)
+from recipes.models import (
+    Favorite,
+    Ingredient,
+    IngredientRecipe,
+    Recipe,
+    ShoppingCart,
+    Tag,
+)
 from users.models import CustomUser
 from users.serializers import CustomUserSerializer
-
 from .utils import Base64ImageField
 
 
@@ -23,23 +28,11 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class IngredientRecipeSerializer(serializers.ModelSerializer):
-    name = serializers.SerializerMethodField()
-    measurement_unit = serializers.SerializerMethodField()
-    id = serializers.SerializerMethodField()
-
-    def get_id(self, obj):
-        return obj.ingredient_id
-
-    def get_name(self, obj):
-        ingredient = Ingredient.objects.filter(pk=obj.ingredient_id)
-        name = ingredient.values()[0]["name"]
-        return name
-
-    def get_measurement_unit(self, obj):
-        unit = Ingredient.objects.filter(pk=obj.ingredient_id).values()[0][
-            "measurement_unit"
-        ]
-        return unit
+    name = serializers.StringRelatedField(source="ingredient.name", read_only="True")
+    measurement_unit = serializers.StringRelatedField(
+        source="ingredient.measurement_unit", read_only="True"
+    )
+    id = serializers.IntegerField(source="ingredient_id", read_only="True")
 
     class Meta:
         model = IngredientRecipe
@@ -55,21 +48,21 @@ class RecipeSerializer(serializers.ModelSerializer):
     is_in_shopping_cart = serializers.SerializerMethodField()
 
     def get_is_favorited(self, obj):
-        request = self.context.get("request", None)
+        request = self.context.get("request")
         if not request:
             return False
         user = request.user
-        if not isinstance(user, CustomUser):
+        if not user.is_authenticated:
             return False
 
         return Favorite.objects.filter(user=user, recipe=obj).exists()
 
     def get_is_in_shopping_cart(self, obj):
-        request = self.context.get("request", None)
+        request = self.context.get("request")
         if not request:
             return False
         user = request.user
-        if not isinstance(user, CustomUser):
+        if not user.is_authenticated:
             return False
         return ShoppingCart.objects.filter(user=user, recipe=obj).exists()
 
