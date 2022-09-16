@@ -20,9 +20,9 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: alibekubaidullayev/api_yamdb:v3
-          context: api_yamdb
-          file: api_yamdb/Dockerfile
+          tags: alibekubaidullayev/foodgram:v1
+          context: foodgram
+          file: foodgram/Dockerfile
 
   deploy:
     runs-on: ubuntu-latest
