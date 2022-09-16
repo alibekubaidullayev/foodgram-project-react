@@ -5,19 +5,22 @@ from recipes.models import Follow, Recipe
 from .models import CustomUser
 
 
+def is_subscribed(self, obj):
+    request = self.context.get("request")
+    if not request:
+        return False
+    user = request.user
+    if not user.is_authenticated:
+        return False
+    return Follow.objects.filter(user=user, following=obj).exists()
+
+
 class CustomUserSerializer(UserCreateSerializer):
 
     is_subscribed = serializers.SerializerMethodField()
 
     def get_is_subscribed(self, obj):
-        request = self.context.get("request", None)
-        if not request:
-            return False
-        user = request.user
-        if not isinstance(user, CustomUser):
-            return False
-
-        return Follow.objects.filter(user=user, following=obj).exists()
+        return is_subscribed(self, obj)
 
     class Meta:
         model = CustomUser
@@ -60,14 +63,7 @@ class CustomUserSubscriptionSerializer(UserCreateSerializer):
         return Recipe.objects.filter(author=obj).count()
 
     def get_is_subscribed(self, obj):
-        request = self.context.get("request", None)
-        if not request:
-            return False
-        user = request.user
-        if not isinstance(user, CustomUser):
-            return False
-
-        return Follow.objects.filter(user=user, following=obj).exists()
+        return is_subscribed(self, obj)
 
     class Meta:
         model = CustomUser

@@ -38,8 +38,14 @@ class Recipe(models.Model):
     name = models.CharField(max_length=MAX_LENGTH, verbose_name="Название")
     image = models.ImageField(verbose_name="Image", upload_to="recipe")
     text = models.TextField(verbose_name="Описание")
-    tags = models.ManyToManyField(Tag, related_name="recipes", verbose_name="Тэги")
-    cooking_time = models.PositiveIntegerField(verbose_name="Время приготовления")
+    tags = models.ManyToManyField(
+        Tag,
+        related_name="recipes",
+        verbose_name="Тэги"
+    )
+    cooking_time = models.PositiveIntegerField(
+        verbose_name="Время приготовления"
+    )
 
     class Meta:
         verbose_name = "Рецепт"

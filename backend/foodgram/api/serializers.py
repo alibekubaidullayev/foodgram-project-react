@@ -35,7 +35,10 @@ class IngredientRecipeCreateSerializer(serializers.ModelSerializer):
 
 
 class IngredientRecipeSerializer(serializers.ModelSerializer):
-    name = serializers.StringRelatedField(source="ingredient.name", read_only=True)
+    name = serializers.StringRelatedField(
+        source="ingredient.name",
+        read_only=True
+    )
     measurement_unit = serializers.StringRelatedField(
         source="ingredient.measurement_unit", read_only=True
     )
@@ -115,7 +118,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         for i in range(len(data["ingredients"])):
             ingredient_name = data["ingredients"][i]["id"]
             if ingredient_name in unique_ingredients:
-                raise serializers.ValidationError("Найден дубликат ингредиента")
+                raise serializers.ValidationError("Найден дубликат ингредиент")
             unique_ingredients.add(ingredient_name)
 
         unique_tags = set()
@@ -128,7 +131,9 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     def _ingredients_save(self, recipe, ingredients):
         objs = (
             IngredientRecipe(
-                recipe=recipe, ingredient=ingredient["id"], amount=ingredient["amount"]
+                recipe=recipe,
+                ingredient=ingredient["id"],
+                amount=ingredient["amount"]
             )
             for ingredient in ingredients
         )
