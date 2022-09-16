@@ -8,4 +8,5 @@ RUN pip3 install -r requirements.txt --no-cache-dir
 
 COPY .  ./
 
-CMD ["gunicorn", "foodgram.wsgi:application", "--bind", "0:5000" ]
+# CMD ["gunicorn", "foodgram.wsgi:application", "--bind", "0:5000" ]
+CMD ["python3", "foodgram/manage.py", "runserver", "5000" ]

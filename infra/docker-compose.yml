@@ -2,15 +2,22 @@ version: '3.8'
 services:
   db:
     image: postgres:13.0-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1
     volumes:
       - /var/lib/postgresql/data/
     ports:
-      - '5433:5432'
+      - '5432:5432'
     env_file:
       - ./.env
 
   web:
-    image: alibekubaidullayev/foodgram:v1
+    # image: alibekubaidullayev/foodgram:v1_backend
+    build:
+      context: ../backend
+      dockerfile: foodgram/Dockerfile
     restart: always
     volumes:
       - static_value:/app/static/
@@ -28,6 +35,7 @@ services:
       - ../frontend/:/app/result_build/
     depends_on:
       - web
+
   nginx:
     image: nginx:1.19.3
     ports:
