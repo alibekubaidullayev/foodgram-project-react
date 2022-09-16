@@ -1,7 +1,11 @@
 import os
 
+from dotenv import load_dotenv
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SECRET_KEY = "7lh_crl4k*=orphz9q4v&&p5$m3n(sn4@q-457@el)j9z$0lb5"
+dotenv_path = os.path.join(BASE_DIR, '../../infra/.env')
+load_dotenv(dotenv_path)
+SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = True
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "users.CustomUser"
