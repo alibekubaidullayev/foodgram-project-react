@@ -1,5 +1,3 @@
-import json
-
 from django.http import HttpResponse
 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -17,6 +15,7 @@ from .serializers import (
     RecipeSerializer,
     TagSerializer,
 )
+from .utils import toTxt
 
 
 FAV_CART_ARGS = {
@@ -75,9 +74,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(detail=False)
     def download_shopping_cart(self, request, *args, **kwargs):
         carts = ShoppingCart.objects.filter(user=self.request.user)
-        recipes = []
-        for cart in carts:
-            recipes.append(cart.recipe.id)
-        queryset = self.queryset.filter(id__in=recipes)
-        serializer = RecipeSerializer(queryset)
-        return HttpResponse(json.dumps(serializer))
+        carts = carts.values_list("recipe")
+        queryset = Recipe.objects.filter(id__in=carts)
+        for i in queryset:
+            print('AAAAAA')
+        result = toTxt(queryset)
+        return HttpResponse(result, content_type='text/plain')
