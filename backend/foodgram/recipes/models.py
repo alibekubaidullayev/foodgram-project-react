@@ -82,7 +82,10 @@ class IngredientRecipe(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.amount} of {self.ingredient.name} in {self.recipe.name}"
+        return (
+            f"{self.amount} {self.ingredient.measurement_unit} "
+            f"of {self.ingredient.name}"
+            )
 
 
 class Favorite(models.Model):
@@ -105,7 +108,7 @@ class Favorite(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=["user", "recipe"],
-                name="unique user recipe"
+                name="unique favorite"
             )
         ]
 
@@ -130,7 +133,7 @@ class ShoppingCart(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=["user", "recipe"],
-                name="unique user recipe"
+                name="unique shoppingcart"
             )
         ]
 

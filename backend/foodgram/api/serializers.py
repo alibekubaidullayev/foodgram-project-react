@@ -116,12 +116,12 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     def validate(self, data):
         unique_ingredients = set()
         for ingredient in data["ingredients"]:
-            if ingredient in unique_ingredients:
+            if ingredient["id"] in unique_ingredients:
                 raise serializers.ValidationError("Найден дубликат ингредиент")
-            unique_ingredients.add(ingredient)
+            unique_ingredients.add(ingredient["id"])
 
         unique_tags = set()
-        for tag in range(len(data["tags"])):
+        for tag in data["tags"]:
             if tag in unique_tags:
                 raise serializers.ValidationError("Найден дубликат тэга")
             unique_tags.add(tag)
