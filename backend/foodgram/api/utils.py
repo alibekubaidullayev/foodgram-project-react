@@ -1,9 +1,7 @@
 import base64
 
 from django.core.files.base import ContentFile
-
 from rest_framework import serializers
-
 from recipes.models import IngredientRecipe
 
 
@@ -18,7 +16,7 @@ class Base64ImageField(serializers.ImageField):
         return super().to_internal_value(data)
 
 
-def toTxt(recipes):
+def to_txt(recipes):
     result = ""
     for recipe in recipes:
         ingredient_objs = IngredientRecipe.objects.filter(recipe=recipe)
@@ -35,10 +33,7 @@ def toTxt(recipes):
         ingredients += ""
 
         data = [
-            f"Название: {recipe.name}",
             ingredients,
-            f"Описание: {recipe.text}",
-            f"Время приготовления: {recipe.cooking_time}",
         ]
         result += "\n".join(data)
     return result

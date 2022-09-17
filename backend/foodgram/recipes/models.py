@@ -74,7 +74,12 @@ class IngredientRecipe(models.Model):
     class Meta:
         verbose_name = "Ингредиент в рецепте"
         verbose_name_plural = "Ингредиенты в рецепте"
-        unique_together = ("ingredient", "recipe")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["ingredient", "recipe"],
+                name="unique ingredient recipe"
+            )
+        ]
 
     def __str__(self):
         return f"{self.amount} of {self.ingredient.name} in {self.recipe.name}"
@@ -97,7 +102,12 @@ class Favorite(models.Model):
     class Meta:
         verbose_name = "Избранное"
         verbose_name_plural = "Избранные"
-        unique_together = ("user", "recipe")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "recipe"],
+                name="unique user recipe"
+            )
+        ]
 
 
 class ShoppingCart(models.Model):
@@ -117,7 +127,12 @@ class ShoppingCart(models.Model):
     class Meta:
         verbose_name = "Покупка"
         verbose_name_plural = "Покупки"
-        unique_together = ("user", "recipe")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "recipe"],
+                name="unique user recipe"
+            )
+        ]
 
 
 class Follow(models.Model):
@@ -136,6 +151,12 @@ class Follow(models.Model):
         verbose_name = "Подписка"
         verbose_name_plural = "Подписки"
         unique_together = ("user", "following")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "following"],
+                name="unique user following"
+            )
+        ]
 
     def __str__(self):
         return f"{self.user} {self.following}"

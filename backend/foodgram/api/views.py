@@ -1,5 +1,4 @@
 from django.http import HttpResponse
-
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets, permissions
 from rest_framework.decorators import action
@@ -15,7 +14,7 @@ from .serializers import (
     RecipeSerializer,
     TagSerializer,
 )
-from .utils import toTxt
+from .utils import to_txt
 
 
 FAV_CART_ARGS = {
@@ -76,7 +75,5 @@ class RecipeViewSet(viewsets.ModelViewSet):
         carts = ShoppingCart.objects.filter(user=self.request.user)
         carts = carts.values_list("recipe")
         queryset = Recipe.objects.filter(id__in=carts)
-        for i in queryset:
-            print('AAAAAA')
-        result = toTxt(queryset)
+        result = to_txt(queryset)
         return HttpResponse(result, content_type='text/plain')
