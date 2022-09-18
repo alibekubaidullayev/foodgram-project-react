@@ -24,6 +24,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 ALLOWED_HOSTS = [
     "localhost",
+    "foodgram.freedynamicdns.org",
     "127.0.0.1",
 ]
 
