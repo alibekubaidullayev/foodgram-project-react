@@ -30,7 +30,6 @@ jobs:
   #         tags: alibekubaidullayev/foodgram:v1_frontend
   #         context: frontend
   #         file: frontend/Dockerfile
-
   deploy:
     runs-on: ubuntu-latest
     needs: build_and_push_to_docker_hub
