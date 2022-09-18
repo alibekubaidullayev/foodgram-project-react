@@ -23,13 +23,13 @@ jobs:
           tags: alibekubaidullayev/foodgram:v1_backend
           context: backend/foodgram
           file: backend/foodgram/Dockerfile
-      - name: Push frontend to Docker Hub
-        uses: docker/build-push-action@v2
-        with:
-          push: true
-          tags: alibekubaidullayev/foodgram:v1_frontend
-          context: frontend
-          file: frontend/Dockerfile
+      # - name: Push frontend to Docker Hub
+      #   uses: docker/build-push-action@v2
+      #   with:
+      #     push: true
+      #     tags: alibekubaidullayev/foodgram:v1_frontend
+      #     context: frontend
+      #     file: frontend/Dockerfile
 
   deploy:
     runs-on: ubuntu-latest
