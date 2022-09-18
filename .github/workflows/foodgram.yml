@@ -28,7 +28,7 @@ jobs:
         with:
           push: true
           tags: alibekubaidullayev/foodgram:v1_frontend
-          context: backend
+          context: frontend
           file: frontend/Dockerfile
 
   deploy:
