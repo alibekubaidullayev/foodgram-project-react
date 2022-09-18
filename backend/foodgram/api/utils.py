@@ -3,6 +3,7 @@ import base64
 from django.db.models import Case, Sum, When
 from django.core.files.base import ContentFile
 from rest_framework import serializers
+
 from recipes.models import Ingredient, IngredientRecipe
 
 
@@ -20,18 +21,17 @@ class Base64ImageField(serializers.ImageField):
 def to_txt(recipes):
     ingredient_ids = recipes.values_list("ingredients")
     ingredients = IngredientRecipe.objects.filter(id__in=ingredient_ids)
-    ingredients_with_amount = Ingredient.objects.annotate(
-        amount=Sum(
-            Case(
-                When(
-                    ingredient_recipe__in=ingredients,
-                    then=("ingredient_recipe__amount"),
-                )
-            )
-        )
-    )
+    ingredients_with_amount = ingredients.values(
+        "ingredient__name", "ingredient__measurement_unit"
+    ).annotate(total_amount=Sum("amount"))
     pre_result = []
     for ingr in ingredients_with_amount:
-        pre_result.append(f"{ingr.name} {ingr.amount} {ingr.measurement_unit}")
-    result = '\n'.join(pre_result)
+        pre_result.append(
+            (
+                f"{ingr['ingredient__name']} "
+                f"{ingr['total_amount']} "
+                f"{ingr['ingredient__measurement_unit']}"
+            )
+        )
+    result = "\n".join(pre_result)
     return result
