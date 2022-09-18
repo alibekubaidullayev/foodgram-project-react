@@ -12,8 +12,8 @@ services:
   web:
     image: alibekubaidullayev/foodgram:v1_backend
     volumes:
-      - static_value:/app/django/static/
-      - media_value:/app/django/media/
+      - static_value:/app/static/
+      - media_value:/app/media/
     restart: always
     depends_on:
       - db
@@ -36,7 +36,7 @@ services:
       - ../frontend/build:/usr/share/nginx/html/
       - ./docs/:/usr/share/nginx/html/api/docs/
       - static_value:/var/html/django/static/
-      - media_value:/var/html/django/media/
+      - media_value:/app/media
     depends_on:
       - frontend
 

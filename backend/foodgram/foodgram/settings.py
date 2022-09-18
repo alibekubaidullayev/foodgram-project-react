@@ -6,7 +6,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 dotenv_path = os.path.join(BASE_DIR, "../../infra/.env")
 load_dotenv(dotenv_path)
 SECRET_KEY = os.getenv("SECRET_KEY")
-DEBUG = True
+DEBUG = False
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "users.CustomUser"
 LANGUAGE_CODE = "en-us"
