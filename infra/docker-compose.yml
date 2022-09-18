@@ -14,10 +14,7 @@ services:
       - ./.env
 
   web:
-    # image: alibekubaidullayev/foodgram:v1_backend
-    build:
-      context: ../backend
-      dockerfile: foodgram/Dockerfile
+    image: alibekubaidullayev/foodgram:v1_backend
     restart: always
     volumes:
       - static_value:/app/static/
@@ -28,9 +25,10 @@ services:
       - ./.env
 
   frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
+    image: alibekubaidullayev/foodgram:v1_frontend
+    # build:
+    #   context: ../frontend
+    #   dockerfile: Dockerfile
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
@@ -38,6 +36,7 @@ services:
 
   nginx:
     image: nginx:1.19.3
+    network_mode: host
     ports:
       - "80:80"
     volumes:
