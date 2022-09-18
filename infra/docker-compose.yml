@@ -2,16 +2,20 @@ version: '3.8'
 services:
   db:
     image: postgres:13.0-alpine
-    restart: always
     volumes:
       - /var/lib/postgresql/data/
-    ports:
-      - '5432:5432'
     env_file:
-      - ./.env
+      - ../infra/.env
+    # ports:
+    #   - '5432:5432'
+    # env_file:
+    #   - ./.env
 
   web:
-    image: alibekubaidullayev/foodgram:v1_backend
+    # image: alibekubaidullayev/foodgram:v1_backend
+    build:
+      context: ../backend/foodgram
+      dockerfile: Dockerfile
     restart: always
     volumes:
       - static_value:/app/static/
@@ -22,14 +26,17 @@ services:
       - ./.env
 
   frontend:
-    image: alibekubaidullayev/foodgram:v1_frontend
+    # image: alibekubaidullayev/foodgram:v1_frontend
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
       - web
 
   nginx:
-    image: nginx:1.19.3
+    image: nginx:1.21.3
     ports:
       - "80:80"
     volumes:
@@ -38,7 +45,6 @@ services:
       - ../docs/:/usr/share/nginx/html/api/docs/
       - static_value:/var/html/django/static/
       - media_value:/var/html/django/media/
-    restart: always
     depends_on:
       - frontend
 
