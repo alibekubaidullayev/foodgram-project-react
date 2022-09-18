@@ -3,9 +3,6 @@ services:
   db:
     image: postgres:13.0-alpine
     restart: always
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=1
     volumes:
       - /var/lib/postgresql/data/
     ports:
@@ -26,9 +23,6 @@ services:
 
   frontend:
     image: alibekubaidullayev/foodgram:v1_frontend
-    # build:
-    #   context: ../frontend
-    #   dockerfile: Dockerfile
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
