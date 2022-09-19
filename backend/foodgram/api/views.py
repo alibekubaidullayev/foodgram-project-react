@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets, permissions
 from rest_framework.decorators import action
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 
 from users.serializers import CustomUserSubscriptionSerializer
@@ -42,7 +42,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
-    pagination_class = PageNumberPagination
+    pagination_class = LimitOffsetPagination
     pagination_class.page_size = 6
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
