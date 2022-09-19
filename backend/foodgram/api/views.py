@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
+from users.serializers import CustomUserSubscriptionSerializer
 from recipes.models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
 from .filters import RecipeFilter
 from .permissions import IsAuthorOrReadOnly
@@ -56,11 +57,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe = self.get_object()
         if request.method == "POST":
             model.objects.create(user=user, recipe=recipe)
-            return Response(status=status.HTTP_201_CREATED)
+            res_ser = CustomUserSubscriptionSerializer(user)
+            return Response(res_ser.data, status=status.HTTP_201_CREATED)
         elif request.method == "DELETE":
             favorite = model.objects.filter(user=user, recipe=recipe)
             favorite.delete()
-            return Response(status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(**FAV_CART_ARGS)
     def favorite(self, request, *args, **kwargs):
@@ -76,4 +78,4 @@ class RecipeViewSet(viewsets.ModelViewSet):
         carts = carts.values_list("recipe")
         queryset = Recipe.objects.filter(id__in=carts)
         result = to_txt(queryset)
-        return HttpResponse(result, content_type='text/plain')
+        return HttpResponse(result, content_type="text/plain")

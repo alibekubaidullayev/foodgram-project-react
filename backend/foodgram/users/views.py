@@ -28,8 +28,9 @@ class CustomUserViewSet(UserViewSet):
         author = self.get_object()
         if request.method == "POST":
             Follow.objects.create(user=request.user, following=author)
-            return Response(status=status.HTTP_201_CREATED)
+            res_ser = CustomUserSubscriptionSerializer(author)
+            return Response(res_ser.data, status=status.HTTP_201_CREATED)
         elif request.method == "DELETE":
             follow = Follow.objects.filter(user=request.user, following=author)
             follow.delete()
-            return Response(status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_204_NO_CONTENT)
