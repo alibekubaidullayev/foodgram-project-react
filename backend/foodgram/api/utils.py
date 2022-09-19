@@ -3,6 +3,7 @@ import base64
 from django.db.models import Sum
 from django.core.files.base import ContentFile
 from rest_framework import serializers
+from rest_framework.pagination import PageNumberPagination
 
 from recipes.models import IngredientRecipe
 
@@ -16,6 +17,12 @@ class Base64ImageField(serializers.ImageField):
             data = ContentFile(base64.b64decode(imgstr), name="temp." + ext)
 
         return super().to_internal_value(data)
+
+
+class PageNumberWithLimitPagination(PageNumberPagination):
+    page_size_query_param = "limit"
+    page_size = 5
+    max_page_size = 100
 
 
 def to_txt(recipes):
