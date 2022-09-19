@@ -6,7 +6,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 dotenv_path = os.path.join(BASE_DIR, "../../infra/.env")
 load_dotenv(dotenv_path)
 SECRET_KEY = os.getenv("SECRET_KEY")
-DEBUG = False
+DEBUG = True
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "users.CustomUser"
 LANGUAGE_CODE = "en-us"
@@ -100,7 +100,6 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
     ),
     "DEFAULT_PAGINATION_CLASS": DEFAULT_PAGINATION_CLASS,
-    "PAGE_SIZE": 6,
     "UPLOADED_FILES_USE_URL": True,
 }
 
