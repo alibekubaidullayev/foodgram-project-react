@@ -91,7 +91,6 @@ DATABASES = {
     }
 }
 
-DEFAULT_PAGINATION_CLASS = "rest_framework.pagination.PageNumberPagination"
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.AllowAny",
@@ -99,7 +98,6 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.TokenAuthentication",
     ),
-    "DEFAULT_PAGINATION_CLASS": DEFAULT_PAGINATION_CLASS,
     "UPLOADED_FILES_USE_URL": True,
 }
 

@@ -47,7 +47,7 @@ class CustomUserSubscriptionSerializer(UserCreateSerializer):
         recipes = Recipe.objects.filter(author=obj)
         data = RecipeSubscriptionSerializer(
             recipes, many=True, context={"request": request}
-        ).data
+        ).data[:3]
         return data
 
     def get_recipes_count(self, obj):
