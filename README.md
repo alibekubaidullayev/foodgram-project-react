@@ -1,9 +1,3 @@
-http://foodgram.freedynamicdns.org
-
-# Логин и пароль администратора (только для Иванова Михаила)
-- login: admin@admin.com
-- password: admin
-
 # Проект "Foodgram"
 Проект "Foodgram" сайт где можно создавать, хранить, искать и делиться рецептами на все случаи жизни.
 
