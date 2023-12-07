@@ -11,10 +11,6 @@
 - PostgreSQL
 - React
 
-### API:
-
-Вся документация по API доступна по ссылке http://foodgram.freedynamicdns.org/api/docs/redoc.html
-
 
 ### Как клонировать репозиторий:
 
